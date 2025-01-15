@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputField from '../InputField';
 import { SignupId } from '@auth0/auth0-acul-js';
 
 const SignupIdPrompt: React.FC = () => {
   const [userEmail, setEmail] = useState(''); // State for email input
   const [error, setError] = useState(''); // State for error messages
+  const [loginLink, setLoginLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const signupIdManager = new SignupId();
+      const link = signupIdManager.screen.loginLink || null;
+      console.log('Login Link:', link);
+      setLoginLink(link);
+    } catch (err) {
+      console.error('Failed to fetch the login link:', err);
+    }
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission
@@ -61,6 +73,15 @@ const SignupIdPrompt: React.FC = () => {
             </button>
           </div>
         </form>
+        <p className="text-center text-sm text-gray-500">
+          Already have an account?{' '}
+          <a
+            href={loginLink || '#'} // Use the login link dynamically fetched from Auth0
+            className="font-semibold text-indigo-600 hover:text-indigo-500"
+          >
+            Log In
+          </a>
+        </p>
       </div>
     </div>
   );
