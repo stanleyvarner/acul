@@ -3,18 +3,26 @@ import InputField from '../InputField';
 import { LoginPassword } from '@auth0/auth0-acul-js';
 
 const LoginPasswordPrompt: React.FC = () => {
-  const [email, setEmail] = useState(''); // State for email input
-  const [password, setPassword] = useState(''); // State for password input
-  const [error, setError] = useState(''); // State for error messages
+  const [email, setEmail] = useState<string>(''); // State for email input
+  const [password, setPassword] = useState<string>(''); // State for password input
+  const [error, setError] = useState<string>(''); // State for error messages
 
   useEffect(() => {
-    // Retrieve email from transaction data if available
-    const transactionData = (window as any).universal_login_transaction_data;
-    const emailFromTransaction = transactionData?.unsafe_data?.submitted_form_data?.username || '';
-    setEmail(emailFromTransaction); // Pre-fill the email field
+    try {
+      // Initialize Auth0 ACUL JS LoginPassword
+      const loginPasswordManager = new LoginPassword();
+
+      // Retrieve the email from `getScreenData`
+      const screenData = loginPasswordManager.screen.getScreenData();
+      const emailFromScreenData = screenData?.username || '';
+      setEmail(emailFromScreenData); // Pre-fill the email field
+    } catch (err) {
+      console.error('Error retrieving screen data:', err);
+      setError('Failed to retrieve email. Please refresh the page.');
+    }
   }, []);
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission
     setError(''); // Reset previous errors
 
@@ -29,15 +37,17 @@ const LoginPasswordPrompt: React.FC = () => {
 
       // Submit email and password to Auth0
       await loginPasswordManager.login({
-        username: email, // Pass the pre-filled email
-        password, // Pass the password entered by the user
+        username: email, // Pre-filled email
+        password, // User-entered password
       });
 
-      console.log('Login successful.');
-      // Auth0 will handle the next step in the flow
-    } catch (error: any) {
-      console.error('Login failed:', error);
-      setError('An error occurred. Please try again.');
+      console.log('Login request sent successfully.');
+      // Auth0 will handle the next step in the login flow
+    } catch (err: unknown) {
+      console.error('Login failed:', err);
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred.';
+      setError(errorMessage);
     }
   };
 
@@ -57,7 +67,6 @@ const LoginPasswordPrompt: React.FC = () => {
               type="email"
               placeholder="Email address"
               value={email} // Pre-filled email
-              onChange={(e) => setEmail(e.target.value)} // Allow editing (optional)
              
             />
             <InputField
@@ -66,7 +75,9 @@ const LoginPasswordPrompt: React.FC = () => {
               type="password"
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // Update password state
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPassword(e.target.value)
+              } // Update password state
             />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>} {/* Display error message */}
