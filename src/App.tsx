@@ -1,68 +1,4 @@
-// 'use client'
-
-// import React, { useState } from 'react'
-// import LoginIdPrompt from '../src/components/prompts/LoginId'
-// import LoginPasswordPrompt from '../src/components/prompts/LoginPassword'
-// import SignupIdPrompt from '../src/components/prompts//SignupId'
-// import SignupPasswordPrompt from '../src/components/prompts/SingupPassword';
-// import '../src/index.css';
-
-// const App: React.FC = () => {
-//   const [currentView, setCurrentView] = useState<string>('loginId')
-
-//   const renderComponent = () => {
-//     switch (currentView) {
-//       case 'loginId':
-//         return <LoginIdPrompt />
-//       case 'loginPassword':
-//         return <LoginPasswordPrompt />
-//       case 'signupId':
-//         return <SignupIdPrompt />
-//       case 'signupPassword':
-//         return <SignupPasswordPrompt />
-//       default:
-//         return <LoginIdPrompt />
-//     }
-//   }
-
-//   return (
-//     <div>
-//       <div className="flex justify-center space-x-4 mb-4">
-//         <button
-//           onClick={() => setCurrentView('loginId')}
-//           className="px-4 py-2 bg-blue-500 text-white rounded"
-//         >
-//           Login ID
-//         </button>
-//         <button
-//           onClick={() => setCurrentView('loginPassword')}
-//           className="px-4 py-2 bg-blue-500 text-white rounded"
-//         >
-//           Login Password
-//         </button>
-//         <button
-//           onClick={() => setCurrentView('signupId')}
-//           className="px-4 py-2 bg-blue-500 text-white rounded"
-//         >
-//           Signup ID
-//         </button>
-//         <button
-//           onClick={() => setCurrentView('signupPassword')}
-//           className="px-4 py-2 bg-blue-500 text-white rounded"
-//         >
-//           Signup Password
-//         </button>
-//       </div>
-//       {renderComponent()}
-//     </div>
-//   )
-// }
-
-// export default App
-
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   LoginId,
   LoginPassword,
@@ -76,9 +12,12 @@ import SignupPasswordPrompt from '../src/components/prompts/SingupPassword';
 import '../src/index.css';
 
 const App: React.FC = () => {
-  const [currentScreen, setCurrentScreen] = useState<string | null>(null);
+  const [screenInstance, setScreenInstance] = useState<
+    LoginId | LoginPassword | SignupId | SignupPassword | null
+  >(null);
 
   useEffect(() => {
+    // Dynamically determine the screen instance from the SDK
     const fetchCurrentScreen = async () => {
       try {
         const screenInstances = [
@@ -92,16 +31,16 @@ const App: React.FC = () => {
           const screenName = instance.screen?.name;
           if (screenName) {
             console.log('Screen name:', screenName);
-            setCurrentScreen(screenName);
+            setScreenInstance(instance);
             return;
           }
         }
 
-        // Fallback to a default screen
-        setCurrentScreen('login-id');
+        // Fallback if no screen is identified
+        setScreenInstance(new LoginId());
       } catch (error) {
         console.error('Failed to fetch the current screen:', error);
-        setCurrentScreen('login-id');
+        setScreenInstance(new LoginId()); // Default fallback
       }
     };
 
@@ -109,7 +48,9 @@ const App: React.FC = () => {
   }, []);
 
   const renderComponent = () => {
-    switch (currentScreen) {
+    if (!screenInstance) return <p>Loading...</p>; // Show loading while fetching the screen
+
+    switch (screenInstance.screen?.name) {
       case 'login-id':
         return <LoginIdPrompt />;
       case 'login-password':
@@ -119,7 +60,7 @@ const App: React.FC = () => {
       case 'signup-password':
         return <SignupPasswordPrompt />;
       default:
-        return <p>Loading...</p>;
+        return <p>Unknown screen</p>;
     }
   };
 
@@ -127,6 +68,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-
-
