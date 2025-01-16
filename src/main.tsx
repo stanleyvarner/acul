@@ -14,8 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <Navbar />
-      <App />
-      <Footer />
+      <div className="main-forms">
+       <App />
+      </div>
+      <div className="content">
+       <Footer />
+      </div>
     </React.StrictMode>
   );
 });
