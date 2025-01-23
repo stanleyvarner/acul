@@ -8,6 +8,7 @@ interface InputFieldProps {
   value: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   readOnly?: boolean;
+  autoComplete?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
