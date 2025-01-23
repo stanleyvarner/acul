@@ -46,8 +46,6 @@ const SignupIdPrompt: React.FC = () => {
         email: userEmail, // Pass the email as the username
       });
 
-      console.log('Signup request sent successfully.');
-      // Auth0 will handle the next steps in the signup flow
     } catch (error: any) {
       console.error('Signup failed:', error);
       setError('An error occurred. Please try again.');

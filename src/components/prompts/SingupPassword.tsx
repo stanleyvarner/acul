@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import InputField from '../InputField';
 import { SignupPassword } from '@auth0/auth0-acul-js';
-import SocialLogin from './SocialLogin';
 
 
 const SignupPasswordPrompt: React.FC = () => {
@@ -79,40 +78,38 @@ const SignupPasswordPrompt: React.FC = () => {
 
           <div className="mt-10">
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
-                <InputField
-                label="Email address"
-                id="email"
-                type="email"
-                placeholder="Email address"
-                value={userEmail}
-                readOnly // Pre-filled email is read-only
-                />
-                <InputField
-                label="Password"
-                id="password"
-                type="password"
-                placeholder="Password"
-                value={userPassword}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPassword(e.target.value)
-                }
-                />
-            </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            <div>
-                <button
-                type="submit"
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                Sign up
-                </button>
-            </div>
+                <div className="rounded-md shadow-sm -space-y-px">
+                    <InputField
+                    label="Email address"
+                    id="email"
+                    type="email"
+                    placeholder="Email address"
+                    value={userEmail}
+                    readOnly // Pre-filled email is read-only
+                    />
+                    <InputField
+                    label="Password"
+                    id="password"
+                    type="password"
+                    placeholder="Password"
+                    value={userPassword}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        setPassword(e.target.value)
+                    }
+                    />
+                </div>
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+                <div>
+                    <button
+                    type="submit"
+                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                    Sign up
+                    </button>
+                </div>
             </form>
 
-            <div className="mt-10">
-              <SocialLogin />
-            </div>
+            
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-6">
